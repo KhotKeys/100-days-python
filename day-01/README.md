@@ -1,4 +1,4 @@
-# Day 01: Project Tracker (CLI)
+# Day 01: Project Tracker (Command-Line Interface)
 
 A command-line app for keeping track of academic projects. Add projects with their series, academic code and dates, mark them as done, delete them, and pick up where you left off next time.
 
