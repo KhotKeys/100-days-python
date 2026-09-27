@@ -1,3 +1,25 @@
+import json
+from pathlib import Path
+
+DATA_FILE = Path(__file__).parent /"projects.json"
+
+def load_projects():
+    if not DATA_FILE.exists():
+        return []
+
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as file:
+            return json.load(file)
+    except json.JSONDecodeError:
+        backup = DATA_FILE.with_suffix(".json.bak")
+        DATA_FILE.rename(backup)
+        print(f"Projects. json was damange. Saved a copy as {backup.name} and started fresh.")
+        return []
+
+def save_projects(projects):
+    with open(DATA_FILE, "w", encoding="utf-8") as file:
+        json.dump(projects, file, indent=2)
+
 def show_menu():
     print("\n=== Project Tracker ===")
     print("1. Add a project")
@@ -27,6 +49,7 @@ def add_project(projects):
     }
 
     projects.append(project)
+    save_projects(projects)
     print(f"Added: {name}")
 
 def view_projects(projects):
@@ -78,6 +101,7 @@ def mark_done(projects):
         return
 
     project["done"] = True
+    save_projects(projects)
     print(f"Marked as done: {project["name"]} ")
 
 
@@ -94,11 +118,12 @@ def delete_project(projects):
         return
 
     removed = projects.pop(index)
+    save_projects(projects)
     print(f"Deleted: {removed['name']}")
 
 
 def main():
-    projects = []
+    projects = load_projects()
 
     while True:
         show_menu()
