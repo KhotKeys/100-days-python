@@ -8,19 +8,26 @@ def show_menu():
 
 def add_project(projects):
     name = input("Name: \n").strip()
+    if not name:
+        print("The project name can't be empty")
+        return
+    
     series = input("Series: \n").strip()
     academic_code = input("Academic Code: \n").strip()
-    start_date = input("Start Date: \n").strip()
-    end_date = input("End Date: \n").strip()
-    title = f"{name} - {series} - {academic_code} - {start_date} - {end_date}".strip()
+    start_date = input("Start date (YYYY-MM-DD): \n").strip()
+    end_date = input("End date (YYYY-MM-DD): \n").strip()
 
-    if not title:
-        print("The project title can't be empty")
-        return
+    project = {
+        "name": name,
+        "series": series,
+        "academic_code": academic_code,
+        "start_date": start_date,
+        "end_date": end_date,
+        "done": False,
+    }
 
-    project = {"title": title,"done": False}
     projects.append(project)
-    print(f"Added: {title}")
+    print(f"Added: {name}")
 
 def view_projects(projects):
     if not projects:
@@ -28,8 +35,67 @@ def view_projects(projects):
         return
     
     for number, project in enumerate(projects, start=1):
-        status = "[X]" if project["done"] else "[ ]"
-        print(f"{number}. {status} {project['title']}")
+        status = "[x]" if project["done"] else "[ ]"
+        name = project["name"]
+        series = project["series"]
+        code = project["academic_code"]
+        start = project["start_date"]
+        end = project["end_date"]
+
+        print(
+            f"{number}. {status} {name} - {series} - {code} - {start} to {end}"
+        )       
+
+def ask_project_index(projects, action):
+    if projects is None:
+        print("There is no project yet.")
+        return None
+
+    view_projects(projects)
+    answer = input(f"Which project you want to {action}?: \n").strip()
+
+    try:
+        number = int(answer)
+    except ValueError:
+        print("please enter a number")
+        return None
+
+    if number < 1 or number > len(projects):
+        print(f"Please pick a number between 1 and {len(projects)}")
+        return None
+    
+    return number - 1
+
+def mark_done(projects):
+    index = ask_project_index(projects, "Mark as done")
+
+    if index is None:
+        return
+
+    project = projects[index]
+    if project["done"]:
+        print(f"{project["name"]} is already done!")
+        return
+
+    project["done"] = True
+    print(f"Marked as done: {project["name"]} ")
+
+
+def delete_project(projects):
+    index = ask_project_index(projects, "Delete")
+
+    if index is None:
+        return
+
+    name = projects[index]["name"]
+    confirmation = input(f"Please delete this '{name}'? (y/n): \n").strip().lower()
+    if confirmation != 'y':
+        print("Delete cancelled.")
+        return
+
+    removed = projects.pop(index)
+    print(f"Deleted: {removed['name']}")
+
 
 def main():
     projects = []
@@ -43,14 +109,14 @@ def main():
         elif choice == "2":
             view_projects(projects)
         elif choice == "3":
-            print("Mark done (COMING SOON)")
+            mark_done(projects)
         elif choice == "4":
-            print("Delete done (COMING SOON)")
+            delete_project(projects)
         elif choice == "5":
-            print("Thank you for using our service. Goodbyee!")
+            print("Thank you for using the Project Tracker. Goodbye!")
             break
         else:
-            print("Please, pick from 1 to 5")
+            print("Please, pick a number from 1 to 5.")
 
 if __name__ == "__main__":
     main()
