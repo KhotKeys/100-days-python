@@ -1,4 +1,4 @@
-# Day 02: Password Generator and Strength Checker (Command-Line Interface)
+| [02](day-02) | Password generator and strength checker | secrets, string, sets, generator expressions, getpass |
 
 A command-line tool that generates secure passwords and checks how strong an existing password is, with tips on how to improve it.
 
